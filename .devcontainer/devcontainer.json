@@ -4,25 +4,30 @@
     "dockerfile": "Dockerfile"
   },
   "features": {
-    "ghcr.io/devcontainers-extra/features/mise:1": {},
-    "ghcr.io/meaningful-ooo/devcontainer-features/fish:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "userGid": "1000",
+      "userUid": "1000",
+      "username": "vscode",
+      "upgradePackages": true
+    },
   },
+  "remoteUser": "vscode",
   "customizations": {
     "vscode": {
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "fish"
-      },
-      "terminal.integrated.profiles.linux": {
-        "fish": {
-          "path": "/usr/bin/fish"
-        }
+        "terminal.integrated.defaultProfile.linux": "fish",
+        "terminal.integrated.profiles.linux": {
+          "fish": {
+            "path": "/home/linuxbrew/.linuxbrew/bin/fish"
+          }
+        },
+        "mise.binPath": "/home/linuxbrew/.linuxbrew/bin/mise"
       },
       "extensions": [
         "hverlin.mise-vscode",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "bradlc.vscode-tailwindcss",
-        "ms-vscode.vscode-typescript-next"
+        "bradlc.vscode-tailwindcss"
       ]
     }
   },
@@ -44,19 +49,25 @@
       "type": "bind"
     },
     {
-      "source": "/var/run/dbus",
-      "target": "/var/run/dbus",
-      "type": "bind",
+      "source": "mise-data-volume",
+      "target": "/mnt/mise-data",
+      "type": "volume"
     },
     {
-      "source": "${localEnv:HOME}/.config/fish/conf.d/40-tools/mise.fish",
-      "target": "/home/vscode/.config/fish/mise.fish",
-      "type": "bind",
-    }
+      "source": "linuxbrew-data-volume",
+      "target": "/home/linuxbrew/.linuxbrew",
+      "type": "volume"
+    },
+  ],
+  "securityOpt": [
+    "label=type:container_runtime_t"
   ],
   "containerEnv": {
-    "NODE_ENV": "development",
+    "MISE_DATA_DIR": "/mnt/mise-data",
     "DISPLAY": "${localEnv:DISPLAY}",
-    "WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}"
-  }
+    "XDG_RUNTIME_DIR": "/tmp",
+  },
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/mnt/mise-data/shims"
+  },
 }

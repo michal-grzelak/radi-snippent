@@ -9,3 +9,7 @@ RUN dnf install -y \
 
 RUN sudo dnf install -y \
     nss atk at-spi2-atk cups-libs libdrm libxkbcommon libXcomposite libXdamage libXfixes libXrandr mesa-libgbm pango cairo alsa-lib nspr gtk3 libxcrypt-compat
+
+RUN dnf5 -y install git
+
+RUN dnf5 -y install chezmoi
